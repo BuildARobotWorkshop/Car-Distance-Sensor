@@ -18,7 +18,7 @@
 // MD_Parola library LED Matrix function constructor
 MD_Parola ledMatrix(hardware_type, data_pin, clk_pin, cs_pin, max_devices);
 
-int scrollSpeed = 50;    // How fast we want the text to scroll
+int scrollSpeed = 0;    // How fast we want the text to scroll (lower the number the faster the speed)
 textEffect_t scrollEffect = PA_SCROLL_DOWN; //Scroll the text DOWN, we can change to UP, LEFT, or RIGHT
 textPosition_t scrollAlign = PA_CENTER; // Align text to the CENTER, we can also set it to LEFT or RIGHT
 int scrollPause = 10000; // How long we want the text to sit at the end of the scroll (in milliseconds)
@@ -40,18 +40,23 @@ void setup()
 {
   //Initialize the object data for the LED Matrix
   ledMatrix.begin();
+  //Initiate the serial object
+  Serial.begin(9600);
 }
 
 
 void loop()
 {
+  //Delay the next loop to allow for more accurate ping (in milliseconds)
+  delay(150);
   //Create distance variable for using the sonar ping function
   int distance = sonar.ping_in();
-
+  //Print the distance in serial monitor so we can see the distance
+  Serial.println(distance);
 
   if (ledMatrix.displayAnimate()){
     //Set the distance of your car from the sensor, measured in Inches
-    if ((distance <= 10) && (distance > 3)){
+    if ((distance <= 50) && (distance > 3)){
       ledMatrix.displayText(message, scrollAlign, scrollSpeed, scrollPause, scrollEffect, scrollEffect);
       ledMatrix.displayReset();
     }
